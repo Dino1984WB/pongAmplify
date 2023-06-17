@@ -1,0 +1,158 @@
+<!--WIlliam Bukowski was here-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Pong Game</title>
+    <style>
+        /* CSS styles */
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+        
+        canvas {
+            background-color: #000000;
+            border: #f50000;
+            border-style: solid;
+            border-width: 10px;
+            display: block;
+            margin: auto;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="gameCanvas"></canvas>
+
+    <script>
+        class PongGame {
+            constructor() {
+                this.canvas = document.getElementById("gameCanvas");
+                this.context = this.canvas.getContext("2d");
+            
+                this.ball = {
+                    x: this.canvas.width / 2,
+                    y: this.canvas.height / 2,
+                    radius: 10,
+                    dx: 3,
+                    dy: 3,
+                    speed: 4,
+                };
+
+                this.paddle = {
+                    width: 10,
+                    height: 60,
+                    x: 0,
+                    y: this.canvas.height / 2 - 30,
+                    dy: 10
+                };
+                this.opponentPaddle = {
+                    width: 10,
+                    height: 60,
+                    x: 300,
+                    y: this.canvas.height / 2 - 30
+                };
+
+                this.setupEventListeners();
+                this.startGame();
+            }
+
+            setupEventListeners() {
+                document.addEventListener("keydown", this.keyDownHandler.bind(this));
+            }
+
+            keyDownHandler(event) {
+                if (event.key === "ArrowUp" || event.key === "Up") {
+                    this.moveOpponentPaddleUp();
+                } else if (event.key === "ArrowDown" || event.key === "Down") {
+                    this.moveOpponentPaddleDown();
+                }
+            }
+
+            keyDownHandler(event) {
+                if (event.key === "w" || event.key === "W") {
+                    this.movePaddleUp();
+                } else if (event.key === "s" || event.key === "S") {
+                    this.movePaddleDown();
+                }
+            }
+
+            movePaddleUp() {
+                this.paddle.y -= this.paddle.dy;
+            }
+
+            movePaddleDown() {
+                this.paddle.y += this.paddle.dy;
+            }
+            moveOpponentPaddleUp() {
+                this.opponentPaddle.y -= this.opponentPaddle.dy;
+            }
+
+            moveOpponentPaddleDown() {
+                this.opponentPaddle.y += this.opponentPaddle.dy;
+            }
+
+            drawBall() {
+                this.context.beginPath();
+                this.context.arc(this.ball.x, this.ball.y, this.ball.radius, 0, Math.PI * 2, false);
+                this.context.fillStyle = "#FFFFFF";
+                this.context.fill();
+                this.context.closePath();
+            }
+
+            drawPaddle() {
+                this.context.fillStyle = "#FFFFFF";
+                this.context.fillRect(50, 175, this.paddle.width, this.paddle.height);
+            }
+
+            drawOpponentPaddle() {
+                this.context.fillStyle = "#FFFFFF";
+                this.context.fillRect(600, 175, this.opponentPaddle.width, this.opponentPaddle.height);
+            }
+
+            update() {
+                this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+                this.drawBall();
+                this.drawPaddle();
+                this.drawOpponentPaddle();
+
+                this.ball.x += this.ball.dx;
+                this.ball.y += this.ball.dy;
+
+                if (this.ball.y + this.ball.radius > this.canvas.height || this.ball.y - this.ball.radius < 0) {
+                    this.ball.dy *= -1;
+                }
+
+                if (this.ball.x + this.ball.radius > this.paddle.x && this.ball.y > this.paddle.y && this.ball.y < this.paddle.y + this.paddle.height) {
+                    this.ball.dx *= -1;
+                }
+
+                if (this.ball.x + this.ball.radius > this.canvas.width) {
+                    alert("Game Over");
+                    this.resetGame();
+                    this.startGame();
+                }
+
+                requestAnimationFrame(this.update.bind(this));
+            }
+
+            resetGame() {
+                this.ball.x = this.canvas.width / 2;
+                this.ball.y = this.canvas.height / 2;
+                this.ball.dx = 3;
+                this.ball.dy = 3;
+            }
+
+            startGame() {
+                this.canvas.width = 650;
+                this.canvas.height = 420;
+                this.update();
+            }
+        }
+
+        // Create an instance of the PongGame class
+        const pongGame = new PongGame();
+    </script>
+</body>
+</html>
