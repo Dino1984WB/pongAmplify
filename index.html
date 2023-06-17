@@ -34,9 +34,10 @@
                     x: this.canvas.width / 2,
                     y: this.canvas.height / 2,
                     radius: 10,
-                    dx: 3,
-                    dy: 3,
+                    dx: 0,
+                    dy: 0,
                     speed: 4,
+                    isMoving: false
                 };
 
                 this.paddle = {
@@ -54,7 +55,6 @@
                 };
 
                 this.setupEventListeners();
-                this.startGame();
             }
 
             setupEventListeners() {
@@ -75,6 +75,7 @@
             touchStartHandler(event) {
                 event.preventDefault();
                 this.touchStartY = event.touches[0].clientY;
+                this.startGame();
             }
         
             touchMoveHandler(event) {
@@ -96,6 +97,7 @@
             mouseDownHandler(event) {
                 event.preventDefault();
                 this.isMousePressed = true;
+                this.startGame();
             }
 
             mouseMoveHandler(event) {
@@ -158,29 +160,31 @@
                 this.drawPaddle();
                 this.drawOpponentPaddle();
 
-                this.ball.x += this.ball.dx;
-                this.ball.y += this.ball.dy;
+                if (this.ball.isMoving) {
+                    this.ball.x += this.ball.dx;
+                    this.ball.y += this.ball.dy;
 
-                if (this.ball.y + this.ball.radius > this.canvas.height || this.ball.y - this.ball.radius < 0) {
-                    this.ball.dy *= -1;
-                }
+                    if (this.ball.y + this.ball.radius > this.canvas.height || this.ball.y - this.ball.radius < 0) {
+                        this.ball.dy *= -1;
+                    }
 
-                if (this.ball.x - this.ball.radius < this.paddle.x + this.paddle.width &&
-                    this.ball.y > this.paddle.y &&
-                    this.ball.y < this.paddle.y + this.paddle.height) {
-                    this.ball.dx *= -1;
-                }
-                
-                if (this.ball.x + this.ball.radius > this.opponentPaddle.x &&
-                    this.ball.y > this.opponentPaddle.y &&
-                    this.ball.y < this.opponentPaddle.y + this.opponentPaddle.height) {
-                    this.ball.dx *= -1;
-                }
+                    if (this.ball.x - this.ball.radius < this.paddle.x + this.paddle.width &&
+                        this.ball.y > this.paddle.y &&
+                        this.ball.y < this.paddle.y + this.paddle.height) {
+                        this.ball.dx *= -1;
+                    }
 
-                if (this.ball.x - this.ball.radius < 0) {
-                    alert("Game Over");
-                    this.resetGame();
-                    this.startGame();
+                    if (this.ball.x + this.ball.radius > this.opponentPaddle.x &&
+                        this.ball.y > this.opponentPaddle.y &&
+                        this.ball.y < this.opponentPaddle.y + this.opponentPaddle.height) {
+                        this.ball.dx *= -1;
+                    }
+
+                    if (this.ball.x - this.ball.radius < 0) {
+                        alert("Game Over");
+                        this.resetGame();
+                        return;
+                    }
                 }
 
                 requestAnimationFrame(this.update.bind(this));
@@ -189,14 +193,18 @@
             resetGame() {
                 this.ball.x = this.canvas.width / 2;
                 this.ball.y = this.canvas.height / 2;
-                this.ball.dx = 3;
-                this.ball.dy = 3;
+                this.ball.dx = 0;
+                this.ball.dy = 0;
+                this.ball.isMoving = false;
             }
 
             startGame() {
-                this.canvas.width = 650;
-                this.canvas.height = 420;
-                this.update();
+                if (!this.ball.isMoving) {
+                    this.ball.dx = 3;
+                    this.ball.dy = 3;
+                    this.ball.isMoving = true;
+                    this.update();
+                }
             }
         }
 
