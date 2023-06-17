@@ -18,11 +18,22 @@
             display: block;
             margin: auto;
         }
+        #divWords {
+            text-align: center;
+            color: #3033f0;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 20px;
+        }
     </style>
 </head>
 <body>
     <canvas id="gameCanvas"></canvas>
-
+    <div id="divWords">
+        <br>
+        <p><h3>Use the mouse or touch to move the paddle up and down</h3></p>
+        <br>
+        <p>Game starts when you touch the screen, runs again and again forever</p>
+    </div>
     <script>
         class PongGame {
             constructor() {
