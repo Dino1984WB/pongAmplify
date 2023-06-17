@@ -1,4 +1,3 @@
-<!--WIlliam Bukowski was here-->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -51,7 +50,8 @@
                     width: 10,
                     height: 60,
                     x: this.canvas.width - 40,
-                    y: this.canvas.height / 2 - 30
+                    y: this.canvas.height / 2 - 30,
+                    dy: 2 + Math.random() * 2 // Random speed for opponent paddle
                 };
 
                 this.setupEventListeners();
@@ -187,7 +187,19 @@
                     }
                 }
 
+                this.moveOpponentPaddle(); // Move the opponent paddle
                 requestAnimationFrame(this.update.bind(this));
+            }
+
+            moveOpponentPaddle() {
+                const ballCenterY = this.ball.y;
+                const paddleCenterY = this.opponentPaddle.y + this.opponentPaddle.height / 2;
+
+                if (paddleCenterY < ballCenterY) {
+                    this.opponentPaddle.y += this.opponentPaddle.dy;
+                } else {
+                    this.opponentPaddle.y -= this.opponentPaddle.dy;
+                }
             }
 
             resetGame() {
