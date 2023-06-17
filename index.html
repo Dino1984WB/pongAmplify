@@ -29,7 +29,7 @@
             constructor() {
                 this.canvas = document.getElementById("gameCanvas");
                 this.context = this.canvas.getContext("2d");
-            
+                
                 this.ball = {
                     x: this.canvas.width / 2,
                     y: this.canvas.height / 2,
@@ -55,6 +55,34 @@
 
                 this.setupEventListeners();
                 this.startGame();
+            }
+
+            setupEventListeners() {
+                // Touch event listeners
+                this.canvas.addEventListener("touchstart", this.touchStartHandler.bind(this));
+                this.canvas.addEventListener("touchmove", this.touchMoveHandler.bind(this));
+                this.canvas.addEventListener("touchend", this.touchEndHandler.bind(this));
+            }
+        
+            touchStartHandler(event) {
+                event.preventDefault();
+                this.touchStartY = event.touches[0].clientY;
+            }
+        
+            touchMoveHandler(event) {
+                event.preventDefault();
+                const touchY = event.touches[0].clientY;
+        
+                if (touchY < this.touchStartY) {
+                    this.movePaddleUp();
+                } else if (touchY > this.touchStartY) {
+                    this.movePaddleDown();
+                }
+            }
+        
+            touchEndHandler(event) {
+                event.preventDefault();
+                this.stopPaddleMovement();
             }
 
             setupEventListeners() {
